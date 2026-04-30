@@ -1,169 +1,142 @@
 <?php
-include "koneksi.php";
+session_start();
+include "../koneksi.php";
 
-if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
+if ($_SESSION['role'] != 'author') {
+    header("Location: ../login.php");
     exit;
 }
 
-// HITUNG DATA
-$jml_artikel   = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM artikel"))['total'];
-$jml_kategori  = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM kategori"))['total'];
-$jml_komentar  = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM komentar"))['total'];
+$id = $_SESSION['id'];
 
-// AMBIL DATA DROPDOWN
-$kategori = mysqli_query($conn, "SELECT * FROM kategori");
-$tag = mysqli_query($conn, "SELECT * FROM tag");
+// HITUNG ARTIKEL
+$jmlArtikel = mysqli_fetch_assoc(mysqli_query($conn, "
+SELECT COUNT(*) as total FROM artikel WHERE staf_id='$id'
+"))['total'];
+
+// HITUNG KOMENTAR
+$jmlKomentar = mysqli_fetch_assoc(mysqli_query($conn, "
+SELECT COUNT(*) as total 
+FROM komentar 
+JOIN artikel ON komentar.artikel_id = artikel.id
+WHERE artikel.staf_id='$id'
+"))['total'];
 ?>
 
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Dashboard Blog Organisasi</title>
+<title>Dashboard Author</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-    <style>
-        body { background: #f4f6fb; }
+<style>
+body {
+    background: #f1f3f9;
+}
 
-        .navbar {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-        }
+/* Sidebar */
+.sidebar {
+    height: 100vh;
+    background: linear-gradient(180deg,#667eea,#764ba2);
+    color: white;
+    padding: 20px;
+}
 
-        .card {
-            border-radius: 12px;
-        }
+.sidebar h4 {
+    font-weight: bold;
+}
 
-        .card-artikel {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
+.sidebar a {
+    color: white;
+    display: block;
+    margin: 12px 0;
+    text-decoration: none;
+    transition: 0.3s;
+}
 
-        .card-kategori {
-            background: linear-gradient(135deg, #43cea2, #185a9d);
-            color: white;
-        }
+.sidebar a:hover {
+    padding-left: 8px;
+    color: #ffd369;
+}
 
-        .card-komentar {
-            background: linear-gradient(135deg, #f7971e, #ffd200);
-            color: white;
-        }
+/* Content */
+.content {
+    padding: 30px;
+}
 
-        .dropdown-menu {
-            border-radius: 10px;
-        }
+/* Card */
+.card-custom {
+    border-radius: 18px;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    color: white;
+    transition: 0.3s;
+}
 
-        .dropdown-item:hover {
-            background: #f0f2ff;
-        }
-    </style>
+.card-custom:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* Welcome box */
+.welcome-box {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+</style>
 </head>
 
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark shadow">
-  <div class="container">
-    
-    <a class="navbar-brand" href="dashboard.php">
-        <i class="bi bi-journal-text"></i> Blog Organisasi
-    </a>
+<div class="row g-0">
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+<!-- SIDEBAR -->
+<div class="col-md-2 sidebar">
+    <h4>✨ Author Panel</h4>
+    <hr>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
+    <a href="dashboard.php"><i class="bi bi-speedometer2"></i> Dashboard</a>
+    <a href="artikel.php"><i class="bi bi-file-text"></i> Artikel</a>
+    <a href="komentar.php"><i class="bi bi-chat-dots"></i> Komentar</a>
+    <a href="../logout.php"><i class="bi bi-box-arrow-right"></i> Logout</a>
+</div>
 
-        <!-- MENU -->
-        <ul class="navbar-nav me-auto">
+<!-- CONTENT -->
+<div class="col-md-10 content">
 
-            <li class="nav-item">
-                <a class="nav-link active" href="index.php">
-                    <i class="bi bi-speedometer2"></i> Dashboard
-                </a>
-            </li>
+<!-- WELCOME -->
+<div class="welcome-box mb-4">
+    <h4>👋 Halo, <?= $_SESSION['username']; ?></h4>
+    <p class="text-muted mb-0">Selamat datang di dashboard author 🚀</p>
+</div>
 
-            <li class="nav-item">
-                <a class="nav-link" href="index.php?menu=artikel">
-                    <i class="bi bi-journal-text"></i> Artikel
-                </a>
-            </li>
+<div class="row">
 
-            <!-- DROPDOWN -->
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                    <i class="bi bi-tags"></i> Kategori & Tag
-                </a>
-
-                <ul class="dropdown-menu shadow">
-
-                    <li class="dropdown-header">Kategori</li>
-                    <?php while($k = mysqli_fetch_assoc($kategori)) { ?>
-                        <li>
-                            <a class="dropdown-item" href="index.php?menu=artikel&kategori=<?= $k['id']; ?>">
-                                <?= $k['nama_kategori']; ?>
-                            </a>
-                        </li>
-                    <?php } ?>
-
-                    <li><hr class="dropdown-divider"></li>
-
-                    <li class="dropdown-header">Tag</li>
-                    <?php while($t = mysqli_fetch_assoc($tag)) { ?>
-                        <li>
-                            <a class="dropdown-item" href="index.php?menu=artikel&tag=<?= $t['id']; ?>">
-                                #<?= $t['nama_tag']; ?>
-                            </a>
-                        </li>
-                    <?php } ?>
-
-                </ul>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="komentar.php">
-                    <i class="bi bi-chat-dots"></i> Komentar
-                </a>
-            </li>
-
-        </ul>
-
-        <!-- USER -->
-        <ul class="navbar-nav">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                    <i class="bi bi-person-circle"></i> <?= $_SESSION['username']; ?>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li class="dropdown-item-text">
-                        Role: <b><?= $_SESSION['role']; ?></b>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li>
-                        <a class="dropdown-item text-danger" href="logout.php">
-                            <i class="bi bi-box-arrow-right"></i> Logout
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-
+<!-- ARTIKEL -->
+<div class="col-md-4">
+    <div class="card card-custom p-4 shadow">
+        <h6><i class="bi bi-journal-text"></i> Artikel</h6>
+        <h2><?= $jmlArtikel; ?></h2>
+        <a href="artikel.php" class="btn btn-light btn-sm mt-2">Kelola</a>
     </div>
-  </div>
-</nav>
+</div>
 
-<!-- CONTENT DASHBOARD -->
+<!-- KOMENTAR -->
+<div class="col-md-4">
+    <div class="card card-custom p-4 shadow">
+        <h6><i class="bi bi-chat-left-dots"></i> Komentar</h6>
+        <h2><?= $jmlKomentar; ?></h2>
+        <a href="komentar.php" class="btn btn-light btn-sm mt-2">Lihat</a>
+    </div>
+</div>
 
-<!-- ROUTING -->
-<?php include "menu.php"; ?>
+</div>
 
-<!-- FOOTER -->
-<?php include "footer.php"; ?>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</div>
+</div>
 
 </body>
 </html>

@@ -83,7 +83,7 @@ include 'koneksi.php';
                 <tr>
                     <td><?= $no++; ?></td>
                     <td>
-                        <img src="upload/<?= $d['gambar']; ?>" width="70" height="50">
+                        <img src="gambar/<?= $d['gambar']; ?>" width="70" height="50">
                     </td>
                     <td><b><?= $d['judul']; ?></b></td>
                     <td><?= date('d M Y', strtotime($d['tanggal'])); ?></td>

@@ -1,5 +1,5 @@
 <?php
-$conn = mysqli_connect("localhost", "root", "", "blogdinamisnsnla");
+$conn = mysqli_connect("localhost", "root", "", "blogdinamisnsnlanew");
 
 if (!$conn) {
     die("Koneksi gagal: " . mysqli_connect_error());

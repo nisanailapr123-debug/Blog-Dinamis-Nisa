@@ -1,5 +1,6 @@
 <?php
 session_start();
+ob_start();
 include "koneksi.php";
 
 $username = $_POST['username'];
@@ -18,16 +19,17 @@ if(mysqli_num_rows($data) > 0){
     $_SESSION['username'] = $d['username'];
     $_SESSION['role'] = $d['role'];
 
-    // DEBUG (sementara cek)
-    // echo $_SESSION['role']; exit;
-
+    // 🔥 redirect sesuai role
     if($d['role'] == 'admin'){
         header("Location: dashboard.php");
     } else {
-        header("Location: author/dashboard.php");
+        header("Location: dashboard.php");
     }
+    exit;
 
 } else {
-    echo "<script>alert('Login gagal');window.location='login.php';</script>";
+    $_SESSION['error'] = "Username atau password salah";
+    header("Location: login.php");
+    exit;
 }
 ?>
