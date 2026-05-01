@@ -7,7 +7,7 @@
 <br>
 
 <h3>Screenshot Dashboard</h3>
-ss Dashboard.png
+<img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/6768ec39-76a6-4732-a82a-7e4bff5ae25f" />
 
 <br>
 
