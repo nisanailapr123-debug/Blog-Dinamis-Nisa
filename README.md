@@ -6,7 +6,7 @@
 
 <br>
 
-<h3>Screenshot Dashboard</h3>
+<h3>Screenshot Dashboard Admin</h3>
 <img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/6768ec39-76a6-4732-a82a-7e4bff5ae25f" />
 
 <br>
@@ -16,3 +16,7 @@
 
 <br>
 
+<h3>Screenshot Tampilan User</h3>
+<img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/18d30edd-bbe7-45b6-9b3a-a4071aa31b9b" />
+
+<br>
