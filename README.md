@@ -11,12 +11,12 @@
 
 <br>
 
-<h3>Screenshot Tampilan</h3>
+<h3>Screenshot Tampilan User</h3>
 <img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/6a647b13-5684-4231-9674-11c1f5c015d0" />
 
 <br>
 
-<h3>Screenshot Tampilan User</h3>
+<h3>Screenshot Tampilan Author</h3>
 <img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/18d30edd-bbe7-45b6-9b3a-a4071aa31b9b" />
 
 <br>
