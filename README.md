@@ -11,4 +11,8 @@
 
 <br>
 
+<h3>Screenshot Tampilan</h3>
+<img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/6a647b13-5684-4231-9674-11c1f5c015d0" />
+
+<br>
 
